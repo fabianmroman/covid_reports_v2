@@ -1,5 +1,6 @@
 # Covid reports v2 
 Origen de datos: http://datos.salud.gob.ar/dataset/covid-19-casos-registrados-en-la-republica-argentina/archivo/fd657d02-a33a-498b-a91b-2ef1a68b8d16
+
 El mismo contiene cada uno de los tests y/o casos sospechosos de Covid que hubieron en Argentina. Se van a utilizar los casos no descartados. 
 
 Archivos: 
