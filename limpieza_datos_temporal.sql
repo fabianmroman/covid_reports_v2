@@ -1,16 +1,45 @@
 ﻿-- Archivo temporal para limpieza de datos, ajuste de tipo de datos y optimización. 
--- La versión definitiva será con un cursor.
 -- Los datos del CSV están en UTF-8 y en otra codificación, por lo cual por más que use SQL Server 2019, iba a tener 
 -- que hacer el mismo trabajo. 
 
 -- 28/04/2021: El uso de índices aceleró enormemente la velocidad de las queries, pudiendo hacer queries más extensas/detalladas.
--- Evaluar usar índices antes de la limpieza, luego hacer un rebuild. 
+-- Evaluar usar índices antes de la limpieza, luego hacer un rebuild de los mismos.
 
 
-USE Covid;
+USE Covid
+GO
 
 -- Eliminar comillas
 
+DECLARE @nombreTabla varchar(30) = 'CasosConfirmados'
+
+DECLARE cursorNombreCol CURSOR FOR
+	SELECT column_name
+	FROM INFORMATION_SCHEMA.COLUMNS
+	WHERE table_name = @nombreTabla;
+
+OPEN cursorNombreCol; 
+
+DECLARE @nombreColumna varchar(32)
+DECLARE @Query varchar(100)
+
+FETCH NEXT FROM cursorNombreCol INTO @nombreColumna
+
+WHILE @@FETCH_STATUS = 0
+	BEGIN
+		UPDATE CasosConfirmados
+		SET @Query = 'SET ' + @nombreColumna + ' = STUFF(' + @nombreColumna + ',1,1,'''')'
+		EXEC(@Query)
+		UPDATE CasosConfirmados
+		SET @Query = 'SET ' + @nombreColumna + '= STUFF(' + @nombreColumna + ',len(' + @nombreColumna + '),1,'''')'
+		EXEC(@Query)
+		FETCH NEXT FROM cursorNombreCol INTO @nombreColumna
+	END
+
+CLOSE cursorNombreCol; 
+DEALLOCATE cursorNombreCol; 
+
+/* Código antiguo 
 UPDATE CasosConfirmados
 SET edad = STUFF(edad,1,1,'')
 
@@ -154,7 +183,7 @@ SET fecha_inicio_sintomas = STUFF(fecha_inicio_sintomas,1,1,'')
 
 UPDATE CasosConfirmados
 SET fecha_inicio_sintomas = STUFF(fecha_inicio_sintomas,len(fecha_inicio_sintomas),1,'')
-
+*/
 
 
 -- Corregir caracteres especiales
