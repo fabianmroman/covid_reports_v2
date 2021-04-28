@@ -3,7 +3,8 @@
 -- Los datos del CSV están en UTF-8 y en otra codificación, por lo cual por más que use SQL Server 2019, iba a tener 
 -- que hacer el mismo trabajo. 
 
--- 28/04/2021: evaluar usar índices antes de la limpieza y luego hacer un rebuild
+-- 28/04/2021: El uso de índices aceleró enormemente la velocidad de las queries, pudiendo hacer queries más extensas/detalladas.
+-- Evaluar usar índices antes de la limpieza, luego hacer un rebuild. 
 
 
 USE Covid;
@@ -344,7 +345,8 @@ CREATE NONCLUSTERED INDEX [NonClusteredIndex-sexo-edad] ON [dbo].[CasosConfirmad
 (
 	[sexo] ASC,
 	[edad] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE 
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE 
+
 = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
 GO
 
@@ -357,7 +359,8 @@ CREATE NONCLUSTERED INDEX [NonClusteredIndex-fechas] ON [dbo].[CasosConfirmados]
 	[fecha_cui_intensivo] ASC,
 	[fecha_fallecimiento] ASC,
 	[fecha_diagnostico] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE 
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE 
+
 = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
 GO
 
@@ -368,7 +371,8 @@ CREATE NONCLUSTERED INDEX [NonClusteredIndex-misc] ON [dbo].[CasosConfirmados]
 	[fallecido] ASC, 
 	[asistencia_respiratoria_mecanica] ASC,
 	[origen_financiamiento] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE 
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE 
+
 = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
 GO
 
@@ -379,7 +383,8 @@ CREATE NONCLUSTERED INDEX [NonClusteredIndex-misc] ON [dbo].[CasosConfirmados]
 	[fallecido] ASC,
 	[asistencia_respiratoria_mecanica] ASC,
 	[origen_financiamiento] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE 
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE 
+
 = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
 GO
 
@@ -388,6 +393,7 @@ CREATE NONCLUSTERED INDEX [NonClusteredIndex-clasificaciones] ON [dbo].[CasosCon
 (
 	[clasificacion] ASC,
 	[clasificacion_resumen] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE 
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE 
+
 = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
 GO

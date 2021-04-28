@@ -7,3 +7,5 @@ Archivos:
 - carga_datos_covid.sql: script para cargar los datos del dataset a la base de datos.
 - limpieza_datos_temporal.sql: script para limpiar los datos cargados a la DB y optimizar los tipos de datos.
 - queries_test.sql: queries de prueba para explorar, limpiar datos y probar formas de obtener informaciÃ³n. 
+
+28/04/2021: El uso de índices mejoró enormemente la velocidad, pudiendo hacer queries más extensas y/o demandantes.

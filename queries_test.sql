@@ -2,25 +2,6 @@
 
 USE Covid;
 
--- Casos totales de una fecha 
-DECLARE @FECHA VARCHAR(12)
-SET @FECHA = '"2021-03-02"'
-
-
--- Query hecha cuando todos los campos eran varchar 
-SELECT * FROM CasosConfirmados
-WHERE fecha_apertura = @FECHA
--- AND residencia_provincia_nombre = '"Buenos Aires"'
-AND edad IN ('"19"','"18"','"17"','"16"','"15"','"14"','"13"','"12"','"11"','"10"','"9"','"8"','"7"','"6"','"5"','"4"','"3"','"2"','"1"','"0"')
-AND
-(clasificacion_resumen = '"Sospechoso"' AND
-clasificacion NOT LIKE '%No Activo%' AND
-clasificacion NOT LIKE '%fallecido%' AND
-clasificacion NOT LIKE '%negativo%'
-OR 
-clasificacion_resumen = '"Confirmado"')
-
-
 
 -- Listar todas las columnas con sus tipos y max length
 SELECT COLUMN_NAME, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH
@@ -57,9 +38,6 @@ ORDER BY carga_provincia_nombre, residencia_provincia_nombre
 SELECT * from CasosConfirmados 
 WHERE edad LIKE '-%'
 
-SELECT TOP 100 * FROM CasosConfirmados
-
-
 SELECT DISTINCT sexo FROM CasosConfirmados
 
 SELECT * FROM CasosConfirmados
@@ -88,7 +66,7 @@ GROUP BY clasificacion
 ORDER BY Cantidad
 
 
--- Modelo de Query 
+-- Modelo de Query exploratoria
 SELECT TOP 10 
 	sexo,
 	edad,
@@ -112,9 +90,31 @@ SELECT COUNT(*) FROM CasosConfirmados
 -- 3629083
 
 
--- Query tentativa para sacar los casos diarios 
-SELECT COUNT(*) AS Cantidad FROM CasosConfirmados
+
+-- Query tentativa para sacar los casos diarios (con alias complejo)
+DECLARE @Fecha date
+DECLARE @Query varchar(1000)
+SET @Fecha = '2021-04-22'
+
+SET @Query = 
+	'SELECT COUNT(*) AS ''Cantidad ' + CONVERT(varchar, @Fecha, 3) + ''' ' +
+	'FROM CasosConfirmados 
+	 WHERE
+		fecha_apertura = ''' + CAST (@Fecha AS varchar) + ''' ' + 'AND 
+		(clasificacion_resumen = ''Confirmado'' OR 
+		(clasificacion_resumen = ''Sospechoso''
+		AND clasificacion NOT LIKE ''%No activo%'')
+		)'
+
+EXEC (@Query)
+
+
+
+-- Contar los casos de cada dia 
+
+SELECT fecha_apertura,  COUNT(*) AS 'Cantidad' FROM CasosConfirmados
 WHERE
-	fecha_diagnostico = '2021-04-10' AND 
-	(clasificacion_resumen = 'Confirmado' OR 
-	(clasificacion_resumen = 'Sospechoso' AND clasificacion NOT LIKE '%No activo%'))
+	clasificacion_resumen = 'Confirmado' OR 
+	(clasificacion_resumen = 'Sospechoso' AND clasificacion NOT LIKE '%No activo%')
+GROUP BY fecha_apertura
+ORDER BY fecha_apertura
