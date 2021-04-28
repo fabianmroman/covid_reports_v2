@@ -1,7 +1,9 @@
-﻿-- Archivo temporal para limpieza de datos y ajuste de tipo de datos. 
+﻿-- Archivo temporal para limpieza de datos, ajuste de tipo de datos y optimización. 
 -- La versión definitiva será con un cursor.
 -- Los datos del CSV están en UTF-8 y en otra codificación, por lo cual por más que use SQL Server 2019, iba a tener 
 -- que hacer el mismo trabajo. 
+
+-- 28/04/2021: evaluar usar índices antes de la limpieza y luego hacer un rebuild
 
 
 USE Covid;
@@ -329,3 +331,63 @@ ALTER TABLE CasosConfirmados ALTER COLUMN residencia_departamento_id smallint;
 ALTER TABLE CasosConfirmados ALTER COLUMN residencia_provincia_id smallint;
 ALTER TABLE CasosConfirmados ALTER COLUMN carga_provincia_id smallint;
 
+
+-- Setear Primary Key
+ALTER TABLE CasosConfirmados ALTER COLUMN id_evento_caso int NOT NULL
+ALTER TABLE CasosConfirmados ADD PRIMARY KEY (id_evento_caso)
+
+
+-- Crear índices del resto de las columnas
+-- (menos de los ids internos que no los usaré de momento)
+
+CREATE NONCLUSTERED INDEX [NonClusteredIndex-sexo-edad] ON [dbo].[CasosConfirmados]
+(
+	[sexo] ASC,
+	[edad] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE 
+= OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
+GO
+
+
+CREATE NONCLUSTERED INDEX [NonClusteredIndex-fechas] ON [dbo].[CasosConfirmados]
+(
+	[fecha_inicio_sintomas] ASC,
+	[fecha_apertura] ASC,
+	[fecha_internacion] ASC,
+	[fecha_cui_intensivo] ASC,
+	[fecha_fallecimiento] ASC,
+	[fecha_diagnostico] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE 
+= OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
+GO
+
+
+CREATE NONCLUSTERED INDEX [NonClusteredIndex-misc] ON [dbo].[CasosConfirmados]
+(
+	[cuidado_intensivo] ASC,
+	[fallecido] ASC, 
+	[asistencia_respiratoria_mecanica] ASC,
+	[origen_financiamiento] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE 
+= OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
+GO
+
+
+CREATE NONCLUSTERED INDEX [NonClusteredIndex-misc] ON [dbo].[CasosConfirmados]
+(
+	[cuidado_intensivo] ASC,
+	[fallecido] ASC,
+	[asistencia_respiratoria_mecanica] ASC,
+	[origen_financiamiento] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE 
+= OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
+GO
+
+
+CREATE NONCLUSTERED INDEX [NonClusteredIndex-clasificaciones] ON [dbo].[CasosConfirmados]
+(
+	[clasificacion] ASC,
+	[clasificacion_resumen] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE 
+= OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
+GO

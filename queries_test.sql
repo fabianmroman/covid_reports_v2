@@ -93,6 +93,7 @@ SELECT TOP 10
 	sexo,
 	edad,
 	residencia_pais_nombre,
+	residencia_provincia_nombre,
 	residencia_departamento_nombre, 
 	fecha_apertura, 
 	fecha_diagnostico, 
@@ -102,6 +103,13 @@ SELECT TOP 10
 	fallecido
 FROM CasosConfirmados
 
+SELECT COUNT(*) FROM CasosConfirmados
+WHERE origen_financiamiento = 'Privado'
+-- 1188393
+
+
+SELECT COUNT(*) FROM CasosConfirmados
+-- 3629083
 
 
 -- Query tentativa para sacar los casos diarios 
