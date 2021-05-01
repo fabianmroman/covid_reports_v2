@@ -118,3 +118,45 @@ WHERE
 	(clasificacion_resumen = 'Sospechoso' AND clasificacion NOT LIKE '%No activo%')
 GROUP BY fecha_apertura
 ORDER BY fecha_apertura
+
+
+-- Contar los casos de cada dia segun edad 
+
+IF OBJECT_ID (N'#resParcial', N'U') IS NOT NULL
+	CREATE TABLE #resParcial (edad tinyint, fecha_apertura date, Cantidad int)
+DECLARE @fechaInicio date = '2021-01-01'
+DECLARE @fechaFin date = '2021-04-23'
+DECLARE @f date  --Iterador 
+DECLARE @listaFechas varchar (4000)
+DECLARE @queryP varchar(4000)
+
+TRUNCATE TABLE #resParcial
+SET @f = @fechaInicio
+SET @listaFechas = ''
+
+WHILE @f <= @fechaFin
+	BEGIN
+		SET @listaFechas = @listaFechas + '[' + CAST(@f AS varchar) + ']'
+		SET @f = dateadd(day, 1, @f)
+		IF @f <= @fechaFin
+		SET @listaFechas = @listaFechas + ', ' 
+	END
+
+
+INSERT INTO #resParcial
+SELECT edad, fecha_apertura, COUNT(*) AS 'Cantidad' FROM CasosConfirmados
+	WHERE
+		(clasificacion_resumen = 'Confirmado' OR 
+		(clasificacion_resumen = 'Sospechoso' AND clasificacion NOT LIKE '%No activo%'))
+		AND edad BETWEEN 15 AND 19 AND fecha_apertura > '2021-01-01'
+	GROUP BY edad, fecha_apertura
+	ORDER BY edad
+
+
+SET @queryP = '
+	SELECT * FROM  #resParcial 
+	PIVOT (SUM(Cantidad) FOR fecha_apertura IN (' + @listaFechas + ')) AS P
+	ORDER BY edad
+	'
+PRINT (@queryP)
+EXEC (@queryP)
